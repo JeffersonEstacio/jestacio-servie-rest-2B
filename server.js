@@ -13,6 +13,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(require("./server/routes/usuario"));
+app.use(require("./server/routes/index"));
+app.use(require("./server/routes/login"));
+app.use(require("./server/routes/user"));
 
 mongoose.connect(
   process.env.URLDB,

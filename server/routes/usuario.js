@@ -2,8 +2,9 @@ const express = require('express');
 const app = express();
 const Usuario = require('../models/usuario');
 
+const { verificaToken, verificaAdminRole } = require('../middlewares/autenticación')
 
-app.get('/usuario', function(req, res) {
+app.get('/usuario', [verificaToken, verificaAdminRole], function(req, res) {
     let desde = req.query.desde || 0;
     desde = Number(desde);
 
@@ -59,11 +60,14 @@ app.get('/usuario', function(req, res) {
         })
 })
 
-app.post('/usuario', function(req, res) {
+app.post('/usuario',[verificaToken, verificaAdminRole], function(req, res) {
     let fecha = new Date()
     let body = req.body;
     let info = new Usuario({
         caja: body.caja,
+        nombre: body.nombre,
+        password: body.password,
+        email: body.email,
         fecha: fecha.getDate() + "/" + fecha.getMonth() + 1 + "/" + fecha.getFullYear(),
         hora: fecha.getHours() + ":" + fecha.getMinutes()
     })
@@ -85,7 +89,7 @@ app.post('/usuario', function(req, res) {
 
 
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id',[verificaToken, verificaAdminRole], function(req, res) {
     let id = req.params.id;
 
     Usuario.findByIdAndDelete(id, (err, regCajaEliminado) => {
